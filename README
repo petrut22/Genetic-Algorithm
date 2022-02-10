@@ -1,0 +1,34 @@
+Stingescu Petrut-Andrei, 334CC
+
+                Tema1 APD
+
+Pentru inceputul temei, am creat structura my_arg in care am pus: vectorul current_generation 
+care reprezinta generatia curenta, vectorul next_generation care reprezinta urmatoarea generatie,
+object_count, generations_count, sack_capacity si sack_objects, thread id si thread_count si barrier 
+pentru a paraleliza forurile, respectiv bariera pentru a o putea utiliza mai departe.
+In prima parte, am creat cei doi vectori care se refera la generatia curenta si cea urmatoare ca apoi sa
+ii transmit prin structura my_arg pentru fiecare thread in parte. 
+Algoritmul  genetic a fost realizat prin paralelizarea for-urilor din interiorul for-ului cel mare( k = 0, generations_count),
+astfel incat threadurile sa faca operatiile necesare pentru fiecare pas din algoritm. Inainte si dupa fiecare 
+for m-am asigurat sa existe cate o bariera pentru nu a intampina probleme legate de operatiile facute mai rapid 
+pe anumite thread-uri.Fiecare thread face operatiile corespunzatoare cu ajutorul a doi indecsi(start_index si final_index) 
+si sunt calculati pe baza numarului de elemente din vector, numarului de thread-uri si a indexului corespunzator thread-ului.
+Pe langa acest lucru, am mai paralelizat si functia compute_fitness_function in functie de de numarul de thread-uri 
+pe care il dau ca parametru la fiecare executie a programului. 
+Schimbul de generatii, astfel incat generatia curenta sa ia locul celei viitoare si invers, s-a realizat 
+intr-un singur thread. In cadrul algoritmului genetic, pentru sortarea vectorului de generatii am folosit o 
+varianta de sortare care imbina ideea de merge pe anumite parti din vector + qsort, utlizand programare paralela.
+La fiecare a-5-a generatie, afisez generatia cea mai buna, pe care o realizez intr-un singur thread. 
+Explicatia rationamentului de sortare este: initial vor fi thread_count parti care urmeaza a fi sortate 
+si dupa se adauga in vectorul mare cu ajutorul functiei merge. In primul rand, sortez vectorul pe anumite parti, 
+in functie de 2 variabile care vor avea rol de indecsi(start_index, end_index). Acesti parametrii se vor calcula 
+in functie de id-ul thread-ului curent, numarului de elemente din vector si numarului de thread-uri folosit la executie. 
+Dupa ce sortez fiecare parte din vector cu qsort, trec la urmatorul pas si anume - fac merge pe fiecare 
+secventa ordonata dupa criterile din enunt. 
+Practic, de fiecare data se va face merge pe cate doua secvente, apoi secventa rezultata va face merge 
+cu urmatoarea secventa din vector. Variabila i va reprezenta indexul care delimiteaza prima secventa 
+fata de urmatoarea, iar j reprezinta indexul de final din a doua secventa la fiecare pas.
+Dupa ce obtin noul vector merge(generation, 0, i, j, generationNew), ma asigur sa il adaug in vectorul 
+initial generation cu forma ordonata. 
+
+La final, se efectueaza eliberearea memoriei alocate pe fiecare vector, inclusiv a thread-ului si distrugerea barierei.
